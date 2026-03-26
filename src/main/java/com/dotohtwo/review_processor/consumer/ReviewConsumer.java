@@ -23,7 +23,9 @@ public class ReviewConsumer {
         logger.info("Received review — id: {}, productId: {}, author: {}, rating: {}, content: {}",
                 review.id(), review.productId(), review.author(), review.rating(), review.content());
 
-        // TODO: Add feature to add this review to add each followers home timeline
+        // TODO: Add feature to add this review to each followers home timeline
+        // Get a list of followers for the author
+        // For each follower, add this review to their home timeline
 
         reviewRepository.save(review)
                 .subscribe(
