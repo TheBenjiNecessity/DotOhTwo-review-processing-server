@@ -1,5 +1,6 @@
-package com.dotohtwo.review_processor;
+package com.dotohtwo.review_processor.repository;
 
+import com.dotohtwo.review_processor.model.Review;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;

@@ -1,4 +1,4 @@
-package com.dotohtwo.review_processor;
+package com.dotohtwo.review_processor.model;
 
 import java.time.Instant;
 
