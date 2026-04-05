@@ -1,5 +1,6 @@
 package com.dotohtwo.review_processor.repository;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
@@ -11,7 +12,7 @@ public class TimelineRepository {
 
     private final ReactiveRedisTemplate<String, String> redisTemplate;
 
-    public TimelineRepository(ReactiveRedisTemplate<String, String> redisTemplate) {
+    public TimelineRepository(@Qualifier("reactiveStringRedisTemplate") ReactiveRedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
