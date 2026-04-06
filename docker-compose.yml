@@ -21,6 +21,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dotohtwolocalinfra
 
   redis:
     profiles: [local]
@@ -34,13 +36,37 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dotohtwolocalinfra
+
+  cassandra:
+    profiles: [local]
+    image: cassandra:5
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: dotohtwo
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks:
+      - dotohtwolocalinfra
 
   review-processor:
     build: .
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
-      SPRING_DATA_REDIS_HOST: ${REDIS_HOST:-redis}
-      SPRING_DATA_REDIS_PORT: ${REDIS_PORT:-6379}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_CASSANDRA_CONTACT_POINTS: cassandra
+    networks:
+      - dotohtwolocalinfra
+
+networks:
+  dotohtwolocalinfra:
+    name: dotohtwolocalinfra
 
 volumes:
   redis-data:

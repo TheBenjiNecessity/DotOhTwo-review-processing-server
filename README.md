@@ -10,37 +10,25 @@ A Spring Boot service that consumes review events from a Kafka topic and persist
 
 ## Running locally
 
-### With a local Kafka and Redis (scenario 1)
+All services communicate over a shared Docker network named `dotohtwolocalinfra`. Both scenarios below use this network — if it already exists (created by the infra project), Docker attaches to it; otherwise it is created fresh.
 
-Spins up Kafka (KRaft mode, no ZooKeeper) and Redis alongside the app:
+### With a shared infrastructure project (scenario 1)
+
+Start the infra project first, then run this service with the external override:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.external.yml up
+```
+
+The `review-processor` container joins the existing `dotohtwolocalinfra` network and resolves the infrastructure containers by their hostnames (`kafka`, `redis`, `cassandra`).
+
+### With a local infrastructure (scenario 2)
+
+Spins up Kafka (KRaft mode, no ZooKeeper), Redis, and Cassandra alongside the app:
 
 ```bash
 docker compose --profile local up
 ```
-
-### With an external Kafka and Redis (scenario 2)
-
-If you already have Kafka and Redis running from another project's Docker Compose, just run the app and point it at those instances:
-
-```bash
-KAFKA_BOOTSTRAP_SERVERS=kafka:9092 REDIS_HOST=redis docker compose up
-```
-
-Or add them to a `.env` file in the project root:
-
-```env
-KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-REDIS_HOST=redis
-REDIS_PORT=6379
-```
-
-Then just run:
-
-```bash
-docker compose up
-```
-
-> If the other project's containers share a Docker network with this one, the default hostnames (`kafka`, `redis`) will resolve automatically and no env vars are needed.
 
 ## Building
 
