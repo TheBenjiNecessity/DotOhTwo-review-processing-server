@@ -2,7 +2,7 @@ package com.dotohtwo.review_processor.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.dotohtwo.review_processor.model.Review;
+import com.dotohtwo.models.dto.ReviewCreatedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -18,32 +18,32 @@ import java.io.IOException;
 public class RedisConfig {
 
     @Bean
-    public ReactiveRedisTemplate<String, Review> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
+    public ReactiveRedisTemplate<String, ReviewCreatedEvent> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-        RedisSerializer<Review> valueSerializer = new RedisSerializer<>() {
+        RedisSerializer<ReviewCreatedEvent> valueSerializer = new RedisSerializer<>() {
             @Override
-            public byte[] serialize(Review review) throws SerializationException {
+            public byte[] serialize(ReviewCreatedEvent review) throws SerializationException {
                 try {
                     return objectMapper.writeValueAsBytes(review);
                 } catch (Exception e) {
-                    throw new SerializationException("Could not serialize Review", e);
+                    throw new SerializationException("Could not serialize ReviewCreatedEvent", e);
                 }
             }
 
             @Override
-            public Review deserialize(byte[] bytes) throws SerializationException {
+            public ReviewCreatedEvent deserialize(byte[] bytes) throws SerializationException {
                 if (bytes == null) return null;
                 try {
-                    return objectMapper.readValue(bytes, Review.class);
+                    return objectMapper.readValue(bytes, ReviewCreatedEvent.class);
                 } catch (IOException e) {
-                    throw new SerializationException("Could not deserialize Review", e);
+                    throw new SerializationException("Could not deserialize ReviewCreatedEvent", e);
                 }
             }
         };
 
-        RedisSerializationContext<String, Review> context = RedisSerializationContext
-                .<String, Review>newSerializationContext(new StringRedisSerializer())
+        RedisSerializationContext<String, ReviewCreatedEvent> context = RedisSerializationContext
+                .<String, ReviewCreatedEvent>newSerializationContext(new StringRedisSerializer())
                 .value(valueSerializer)
                 .build();
         return new ReactiveRedisTemplate<>(factory, context);

@@ -1,6 +1,6 @@
 package com.dotohtwo.review_processor.consumer;
 
-import com.dotohtwo.review_processor.model.Review;
+import com.dotohtwo.models.dto.ReviewCreatedEvent;
 import com.dotohtwo.review_processor.repository.ReviewRepository;
 import com.dotohtwo.review_processor.service.TimelineService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -23,19 +23,24 @@ public class ReviewConsumer {
     }
 
     @KafkaListener(topics = "${kafka.topic.reviews}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consume(ConsumerRecord<String, Review> record) {
-        Review review = record.value();
+    public void consume(ConsumerRecord<String, ReviewCreatedEvent> record) {
+        if (record.value() == null) {
+            logger.error("Skipping undeserializable record at partition={} offset={}",
+                    record.partition(), record.offset());
+            return;
+        }
+        ReviewCreatedEvent review = record.value();
         logger.info("Received review — id: {}, productId: {}, author: {}, rating: {}, content: {}",
-                review.id(), review.productId(), review.author(), review.rating(), review.content());
+                review.reviewId(), review.productId(), review.authorId(), review.rating(), review.content());
 
         reviewRepository.save(review)
                 .flatMap(saved -> {
-                    logger.info("Saved review {} to Redis", review.id());
+                    logger.info("Saved review {} to Redis", review.reviewId());
                     return timelineService.fanOutToFollowers(review);
                 })
                 .subscribe(
                         null,
-                        error -> logger.error("Failed to process review {}: {}", review.id(), error.getMessage())
+                        error -> logger.error("Failed to process review {}: {}", review.reviewId(), error.getMessage())
                 );
     }
 }

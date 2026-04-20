@@ -31,6 +31,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>com.dotohtwo</groupId>
+			<artifactId>models</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
@@ -62,6 +67,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>dotohtwo-dotohtwo-mvn-models</id>
+			<url>https://dotohtwo-045163258667.d.codeartifact.us-east-1.amazonaws.com/maven/dotohtwo-mvn-models/</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
