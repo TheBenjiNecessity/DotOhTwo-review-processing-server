@@ -55,7 +55,10 @@ services:
       - dotohtwolocalinfra
 
   review-processor:
-    build: .
+    build:
+      context: .
+      args:
+        CODEARTIFACT_AUTH_TOKEN: ${CODEARTIFACT_AUTH_TOKEN}
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DATA_REDIS_HOST: redis

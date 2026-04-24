@@ -30,6 +30,16 @@ Spins up Kafka (KRaft mode, no ZooKeeper), Redis, and Cassandra alongside the ap
 docker compose --profile local up
 ```
 
+## AWS CodeArtifact
+
+This project depends on the `com.dotohtwo:models` library published to AWS CodeArtifact. Before building, authenticate Maven with CodeArtifact so it can resolve the dependency. Tokens expire after 12 hours, so you'll need to re-run this each session.
+
+```bash
+aws codeartifact login --tool maven --domain <domain> --domain-owner <account-id> --repository <repo-name>
+```
+
+This updates `~/.m2/settings.xml` with the auth token automatically.
+
 ## Building
 
 ```bash

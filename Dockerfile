@@ -2,11 +2,14 @@
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
+COPY .mvn/ .mvn/
 COPY pom.xml .
-RUN mvn dependency:go-offline -q
+ARG CODEARTIFACT_AUTH_TOKEN
+ENV CODEARTIFACT_AUTH_TOKEN=$CODEARTIFACT_AUTH_TOKEN
+RUN mvn -s .mvn/settings.xml dependency:go-offline -q
 
 COPY src src
-RUN mvn package -DskipTests -q
+RUN mvn -s .mvn/settings.xml package -DskipTests -q
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
