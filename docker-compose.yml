@@ -64,6 +64,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_CASSANDRA_CONTACT_POINTS: cassandra
+      FOLLOWER_SERVICE_BASE_URL: http://user-reviewable-api:8080
     networks:
       - dotohtwolocalinfra
 
