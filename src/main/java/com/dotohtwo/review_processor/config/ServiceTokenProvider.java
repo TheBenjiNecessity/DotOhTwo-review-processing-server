@@ -14,7 +14,7 @@ public class ServiceTokenProvider {
 
     private final JwtEncoder encoder;
     private volatile String cachedToken;
-    private volatile Instant tokenExpiry = Instant.MIN;
+    private volatile Instant tokenExpiry = Instant.EPOCH;
 
     public ServiceTokenProvider(@Value("${jwt.secret}") String secret) {
         SecretKeySpec key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
