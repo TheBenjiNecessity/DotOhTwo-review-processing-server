@@ -33,6 +33,7 @@ public class TimelineService {
         this.reviewRepository = reviewRepository;
     }
 
+    // Fan-out on write: indexes the review under the author and pushes it to every follower's timeline in parallel.
     public Mono<Void> fanOutToFollowers(ReviewCreatedEvent review) {
         Mono<Void> indexUpdate = timelineRepository
                 .addToAuthoredReviews(review.authorId(), review.reviewId().toString())
@@ -49,6 +50,7 @@ public class TimelineService {
         return Mono.when(indexUpdate, fanOut);
     }
 
+    // Called on a new follow: retroactively adds the followed user's recent reviews (within backfillDays) to the follower's timeline.
     public Mono<Void> backfillTimelineForFollower(String followerId, String followedUserId) {
         Instant cutoff = Instant.now().minus(backfillDays, ChronoUnit.DAYS);
 
