@@ -22,11 +22,11 @@ public class FollowerServiceClient {
      * Returns the IDs of all users who follow the given userId.
      * Calls GET /users/{userId}/followers → String[]
      */
-    public Flux<String> getFollowers(String userId) {
+    public Flux<String> getFollowers(String username) {
         return webClient.get()
-                .uri("/users/{userId}/followers", userId)
+                .uri("/users/{username}/followers", username)
                 .retrieve()
                 .bodyToFlux(String.class)
-                .doOnError(error -> logger.error("Failed to fetch followers for user {}: {}", userId, error.getMessage()));
+                .doOnError(error -> logger.error("Failed to fetch followers for user {}: {}", username, error.getMessage()));
     }
 }
