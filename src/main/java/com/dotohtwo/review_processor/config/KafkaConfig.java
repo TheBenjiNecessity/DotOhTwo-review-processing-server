@@ -14,7 +14,7 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.support.serializer.DeserializationException;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
@@ -42,9 +42,9 @@ public class KafkaConfig {
 
         Map<String, Object> props = new HashMap<>(((DefaultKafkaConsumerFactory<?, ?>) baseConsumerFactory).getConfigurationProperties());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, UserFollowedEvent.class.getName());
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.dotohtwo.review_processor.model");
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JacksonJsonDeserializer.class.getName());
+        props.put(JacksonJsonDeserializer.VALUE_DEFAULT_TYPE, UserFollowedEvent.class.getName());
+        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "com.dotohtwo.review_processor.model");
 
         DefaultKafkaConsumerFactory<String, UserFollowedEvent> consumerFactory =
                 new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new ErrorHandlingDeserializer<>());
