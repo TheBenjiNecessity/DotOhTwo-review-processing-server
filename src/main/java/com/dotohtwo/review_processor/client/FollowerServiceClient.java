@@ -4,10 +4,13 @@ import com.dotohtwo.review_processor.config.ServiceTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Component
 public class FollowerServiceClient {
@@ -37,7 +40,8 @@ public class FollowerServiceClient {
         return webClient.get()
                 .uri("/users/{username}/followers", username)
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                .flatMapMany(Flux::fromIterable)
                 .doOnError(error -> logger.error("Failed to fetch followers for user {}: {}", username, error.getMessage()));
     }
 }
